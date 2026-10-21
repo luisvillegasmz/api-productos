@@ -1,0 +1,56 @@
+@base = http://localhost:3000
+
+### 1. Estado del servidor (200)
+GET {{base}}/api/health
+
+### 2. Crear un producto (201 + Location)
+# @name crearProducto
+POST {{base}}/api/productos
+Content-Type: application/json
+
+{ "nombre": "Mouse", "precio": 45000, "stock": 10 }
+
+### 3. Listar productos (200)
+GET {{base}}/api/productos
+
+### 4. Obtener uno (200)
+GET {{base}}/api/productos/{{crearProducto.response.body.$.id}}
+
+### 5. Reemplazar con PUT (200)
+PUT {{base}}/api/productos/{{crearProducto.response.body.$.id}}
+Content-Type: application/json
+
+{ "nombre": "Mouse inalámbrico", "precio": 50000, "stock": 8 }
+
+### 6. Eliminar (204)
+DELETE {{base}}/api/productos/{{crearProducto.response.body.$.id}}
+
+### 7. Id que no existe (404)
+GET {{base}}/api/productos/no-existe
+
+
+
+### ❌ 1. Datos inválidos: ¿qué responde?
+POST {{base}}/api/productos
+Content-Type: application/json
+
+{ "nombre": 123 }
+
+### ❌ 2. JSON malformado: ¿qué responde?
+POST {{base}}/api/productos
+Content-Type: application/json
+
+{mal
+
+### ❌ 3. PUT parcial: ¿qué pasa con los campos que faltan?
+# @name productoParaPUT
+POST {{base}}/api/productos
+Content-Type: application/json
+
+{ "nombre": "Teclado", "precio": 80000, "stock": 5 }
+
+###
+PUT {{base}}/api/productos/{{productoParaPUT.response.body.$.id}}
+Content-Type: application/json
+
+{ "precio": 1 }
